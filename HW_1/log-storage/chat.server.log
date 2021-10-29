@@ -1,0 +1,6 @@
+2021-10-29 11:48:21,309 - DEBUG    - server   - App started 
+2021-10-29 11:48:21,324 - DEBUG    - body     - Function "get_server_socket" is called into "mainloop" 
+2021-10-29 11:48:21,326 - INFO     - server   - Server started at 127.0.0.1:7777 
+2021-10-29 11:48:21,458 - INFO     - server   - Client connected from 127.0.0.1:50200 
+2021-10-29 11:48:21,962 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-10-29 11:48:21,963 - DEBUG    - body     - Function "send_data" is called into "mainloop" 

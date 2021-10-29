@@ -1,0 +1,12 @@
+2021-06-27 12:17:29,936 - DEBUG    - client   - App started 
+2021-06-27 12:17:35,912 - INFO     - client   - Connected to server: 1624785455.9124732:е123 
+2021-06-27 12:17:35,920 - INFO     - client   - Data sended to b'{"action": "presence", "time": 1624785455.9124732, "type": "online", "user": {"account_name": "\xd0\xb5123", "status": "\xd0\xa1\xd1\x82\xd0\xb0\xd1\x82\xd1\x83\xd1\x81 \xd0\xbd\xd0\xbe\xd1\x80\xd0\xbc"}}' 
+2021-06-27 12:17:35,921 - DEBUG    - client   - App ending 
+2021-07-05 15:06:32,311 - DEBUG    - client   - App started 
+2021-07-05 15:06:32,311 - DEBUG    - client   - Function "client_param" is called from "__main__" 
+2021-07-05 15:06:32,311 - DEBUG    - client   - Function "client_data_encode" is called from "__main__" 
+2021-07-05 15:06:32,311 - DEBUG    - client   - Function "data_clients_input" is called from "__main__" 
+2021-07-05 15:06:34,365 - INFO     - client   - Connected to server: 1625486794.365667:123 
+2021-07-05 15:06:34,368 - INFO     - client   - Data sended to b'{"action": "presence", "time": 1625486794.365667, "type": "online", "user": {"account_name": "123", "status": "\xd0\xa1\xd1\x82\xd0\xb0\xd1\x82\xd1\x83\xd1\x81 \xd0\xbd\xd0\xbe\xd1\x80\xd0\xbc"}}' 
+2021-07-05 15:06:34,368 - DEBUG    - client   - Function "server_responce_to_str" is called from "__main__" 
+2021-07-05 15:06:34,368 - DEBUG    - client   - App ending 

@@ -1,0 +1,9 @@
+2021-07-05 15:05:55,251 - DEBUG - server - App started 
+2021-07-05 15:05:55,252 - DEBUG - server - Function "server_param" is called from "__main__" 
+2021-07-05 15:05:55,252 - INFO - server - server param , 7777 
+2021-07-05 15:06:34,366 - INFO - server - incom mess from <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 52159)>,('127.0.0.1', 52159) 
+2021-07-05 15:06:34,367 - DEBUG - server - Function "client_data_to_dict" is called from "__main__" 
+2021-07-05 15:06:34,367 - INFO - server - {'action': 'presence', 'time': 1625486794.365667, 'type': 'online', 'user': {'account_name': '123', 'status': 'Статус норм'}} 
+2021-07-05 15:06:34,367 - DEBUG - server - Function "server_responce" is called from "__main__" 
+2021-07-05 15:06:34,367 - DEBUG - server - Function "server_responce_200" is called from "__main__" 
+2021-07-05 15:06:34,368 - DEBUG - server - App ending 
