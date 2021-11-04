@@ -1,0 +1,39 @@
+2021-11-03 08:23:22,401 - INFO - Server started with 127.0.0.1:7777
+2021-11-03 08:25:54,725 - INFO - Server  closed
+2021-11-03 08:59:40,329 - INFO - Server started with 127.0.0.1:7777
+2021-11-03 09:00:19,153 - INFO - Client detected ('127.0.0.1', 57487)
+2021-11-03 09:00:28,594 - DEBUG - validate_request - with args:({'action': 'test', 'time': '2021-11-03T09:00:28.593155', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '0000'},), {}
+2021-11-03 09:00:28,610 - ERROR - Action test does not exits
+2021-11-03 09:00:28,610 - DEBUG - make_404 - with args:({'action': 'test', 'time': '2021-11-03T09:00:28.593155', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '0000'},), {}
+2021-11-03 09:00:28,610 - DEBUG - make_response - with args:({'action': 'test', 'time': '2021-11-03T09:00:28.593155', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '0000'}, 404, 'Action is not supported'), {}
+2021-11-03 09:01:42,508 - INFO - Server  closed
+2021-11-03 17:38:24,188 - INFO - Server started with 127.0.0.1:7777
+2021-11-03 17:41:15,130 - INFO - Client detected ('127.0.0.1', 59698)
+2021-11-03 17:41:24,578 - INFO - Client detected ('127.0.0.1', 59699)
+2021-11-03 17:42:49,367 - INFO - Client detected ('127.0.0.1', 59706)
+2021-11-03 17:42:59,610 - DEBUG - validate_request - with args:({'action': 'echo', 'time': 1635950579.608375, 'data': '123'},), {}
+2021-11-03 17:42:59,620 - DEBUG - get_echo - with args:({'action': 'echo', 'time': 1635950579.608375, 'data': '123'},), {}
+2021-11-03 17:42:59,620 - DEBUG - make_response - with args:({'action': 'echo', 'time': 1635950579.608375, 'data': '123'}, 200, '123'), {}
+2021-11-03 17:42:59,621 - INFO - Request is valid and processed by controller
+2021-11-03 17:42:59,647 - DEBUG - validate_request - with args:({'action': 'echo', 'time': 1635950578.005466, 'data': '99999'},), {}
+2021-11-03 17:42:59,647 - DEBUG - get_echo - with args:({'action': 'echo', 'time': 1635950578.005466, 'data': '99999'},), {}
+2021-11-03 17:42:59,647 - DEBUG - make_response - with args:({'action': 'echo', 'time': 1635950578.005466, 'data': '99999'}, 200, '99999'), {}
+2021-11-03 17:42:59,647 - INFO - Request is valid and processed by controller
+2021-11-03 17:42:59,725 - DEBUG - validate_request - with args:({'action': 'echo', 'time': 1635950572.182644, 'data': 'now'},), {}
+2021-11-03 17:42:59,726 - DEBUG - get_echo - with args:({'action': 'echo', 'time': 1635950572.182644, 'data': 'now'},), {}
+2021-11-03 17:42:59,726 - DEBUG - make_response - with args:({'action': 'echo', 'time': 1635950572.182644, 'data': 'now'}, 200, 'now'), {}
+2021-11-03 17:42:59,726 - INFO - Request is valid and processed by controller
+2021-11-04 09:34:04,984 - INFO - Server closed
+2021-11-04 09:34:10,015 - INFO - Server started with 127.0.0.1:7777
+2021-11-04 09:34:21,225 - INFO - Client detected ('127.0.0.1', 61816)
+2021-11-04 09:34:27,504 - DEBUG - validate_request - with args:({'action': 'echo', 'time': 1636007667.503481, 'data': 'test'},), {}
+2021-11-04 09:34:27,512 - DEBUG - get_echo - with args:({'action': 'echo', 'time': 1636007667.503481, 'data': 'test'},), {}
+2021-11-04 09:34:27,512 - DEBUG - make_response - with args:({'action': 'echo', 'time': 1636007667.503481, 'data': 'test'}, 200, 'test'), {}
+2021-11-04 09:34:27,512 - INFO - Request is valid and processed by controller
+2021-11-04 09:34:48,573 - INFO - Server closed
+2021-11-04 09:43:32,349 - INFO - Server started with 127.0.0.1:7777
+2021-11-04 09:43:37,513 - INFO - Client detected ('127.0.0.1', 63059)
+2021-11-04 09:43:53,531 - INFO - Server closed
+2021-11-04 09:58:30,576 - INFO - Server started with 127.0.0.1:7777
+2021-11-04 09:58:38,107 - INFO - Client detected ('127.0.0.1', 64070)
+2021-11-04 09:59:16,369 - INFO - Server closed
