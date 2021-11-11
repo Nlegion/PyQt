@@ -4,7 +4,7 @@ from server.decorators import logged
 
 
 @logged
-def validate_request(raw):  # запись в лог запроса
+def validate_request(raw):
     request_time = raw.get('time')
     request_action = raw.get('action')
 
@@ -12,7 +12,7 @@ def validate_request(raw):  # запись в лог запроса
 
 
 @logged
-def make_response(request, code, data=None):  # запись в лог ответа
+def make_response(request, code, data=None):
     return {
         'action': request.get('action'),
         'user': request.get('user'),
@@ -23,10 +23,10 @@ def make_response(request, code, data=None):  # запись в лог отве�
 
 
 @logged
-def make_400(request):  # запись в лог ошибки формата
+def make_400(request):
     return make_response(request, 400, 'Wrong request format')
 
 
 @logged
-def make_404(request): # запись в лог ошибки запроса
+def make_404(request):
     return make_response(request, 404, 'Action is not supported')

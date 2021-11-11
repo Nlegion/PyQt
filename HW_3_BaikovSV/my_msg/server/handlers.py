@@ -5,15 +5,15 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(BASE_DIR))
 
-from core import jim # преобразование в формат
-from server.protocol import ( # логирование события
+from core import jim  # преобразование в формат
+from server.protocol import (  # логирование события
     validate_request, make_response,
     make_400, make_404
 )
-from server.routes import resolve
+from server.routes import resolve  # Адрес отправки ?
 
 
-def handle_request(raw_request):
+def handle_request(raw_request):  # функция формирования json ответа
     request = jim.unpack(raw_request)
 
     action_name = request.get('action')

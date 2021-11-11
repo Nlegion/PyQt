@@ -1,7 +1,7 @@
 import json
 
 
-def pack(dict_msg): # упаковка в формат
+def pack(dict_msg):
     """
     Создание сообщения, пригодного для отправки через TCP
     :param dict_msg: dict
@@ -11,7 +11,7 @@ def pack(dict_msg): # упаковка в формат
     return str_msg.encode('utf-8')
 
 
-def unpack(bt_str): # распаковка из формата
+def unpack(bt_str):
     """
     Распаквка полученного сообщения
     :param bt_str: str

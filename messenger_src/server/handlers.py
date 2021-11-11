@@ -5,8 +5,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(BASE_DIR))
 
-from core import jim # преобразование в формат
-from server.protocol import ( # логирование события
+from core import jim
+from server.protocol import (
     validate_request, make_response,
     make_400, make_404
 )
