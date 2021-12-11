@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client.database module &#8212; lesson_07  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-client.database">
+<span id="client-database-module"></span><h1>client.database module<a class="headerlink" href="#module-client.database" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="client.database.ClientDatabase">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">client.database.</span></code><code class="sig-name descname"><span class="pre">ClientDatabase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс - оболочка для работы с базой данных клиента.
+Использует SQLite базу данных, реализован с помощью
+SQLAlchemy ORM и используется классический подход.</p>
+<dl class="py class">
+<dt id="client.database.ClientDatabase.Contacts">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Contacts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.Contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.Contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс - отображение для таблицы контактов.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="client.database.ClientDatabase.KnownUsers">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">KnownUsers</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.KnownUsers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.KnownUsers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс - отображение для таблицы всех пользователей.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="client.database.ClientDatabase.MessageStat">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">MessageStat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.MessageStat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.MessageStat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс - отображение для таблицы статистики переданных сообщений.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.add_contact">
+<code class="sig-name descname"><span class="pre">add_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.add_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.add_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод добавляющий контакт в базу данных.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.add_users">
+<code class="sig-name descname"><span class="pre">add_users</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">users_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.add_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.add_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод заполняющий таблицу известных пользователей.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.check_contact">
+<code class="sig-name descname"><span class="pre">check_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.check_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.check_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод проверяющий существует ли контакт.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.check_user">
+<code class="sig-name descname"><span class="pre">check_user</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.check_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.check_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод проверяющий существует ли пользователь.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.contacts_clear">
+<code class="sig-name descname"><span class="pre">contacts_clear</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.contacts_clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.contacts_clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод очищающий таблицу со списком контактов.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.del_contact">
+<code class="sig-name descname"><span class="pre">del_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.del_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.del_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод удаляющий определённый контакт.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.get_contacts">
+<code class="sig-name descname"><span class="pre">get_contacts</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.get_contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.get_contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод возвращающий список всех контактов.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.get_history">
+<code class="sig-name descname"><span class="pre">get_history</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.get_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.get_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод возвращающий историю сообщений с определённым пользователем.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.get_users">
+<code class="sig-name descname"><span class="pre">get_users</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.get_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.get_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод возвращающий список всех известных пользователей.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.database.ClientDatabase.save_message">
+<code class="sig-name descname"><span class="pre">save_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/database.html#ClientDatabase.save_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.database.ClientDatabase.save_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод сохраняющий сообщение в базе данных.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">lesson_07</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common.html">common package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launcher.html">launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launcher_gui.html">launcher_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">logs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server_database.html">server_database module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server_gui.html">server_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_tests.html">unit_tests package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/client.database.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

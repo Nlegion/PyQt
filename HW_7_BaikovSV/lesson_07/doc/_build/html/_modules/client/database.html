@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client.database &#8212; lesson_07  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for client.database</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> \
+    <span class="n">MetaData</span><span class="p">,</span> <span class="n">DateTime</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">sessionmaker</span>
+
+<span class="kn">from</span> <span class="nn">common.variables</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="ClientDatabase"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase">[docs]</a><span class="k">class</span> <span class="nc">ClientDatabase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс - оболочка для работы с базой данных клиента.</span>
+<span class="sd">    Использует SQLite базу данных, реализован с помощью</span>
+<span class="sd">    SQLAlchemy ORM и используется классический подход.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ClientDatabase.KnownUsers"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.KnownUsers">[docs]</a>    <span class="k">class</span> <span class="nc">KnownUsers</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Класс - отображение для таблицы всех пользователей.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">user</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.MessageStat"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.MessageStat">[docs]</a>    <span class="k">class</span> <span class="nc">MessageStat</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Класс - отображение для таблицы статистики переданных сообщений.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contact</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contact</span> <span class="o">=</span> <span class="n">contact</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.Contacts"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.Contacts">[docs]</a>    <span class="k">class</span> <span class="nc">Contacts</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Класс - отображение для таблицы контактов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contact</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">contact</span></div>
+
+    <span class="c1"># Конструктор класса:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># Создаём движок базы данных, поскольку разрешено несколько</span>
+        <span class="c1"># клиентов одновременно, каждый должен иметь свою БД</span>
+        <span class="c1"># Поскольку клиент мультипоточный необходимо отключить</span>
+        <span class="c1"># проверки на подключения с разных потоков,</span>
+        <span class="c1"># иначе sqlite3.ProgrammingError</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;client_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">.db3&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;sqlite:///</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">echo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">pool_recycle</span><span class="o">=</span><span class="mi">7200</span><span class="p">,</span>
+            <span class="n">connect_args</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;check_same_thread&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+        <span class="c1"># Создаём объект MetaData</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">()</span>
+
+        <span class="c1"># Создаём таблицу известных пользователей</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s1">&#39;known_users&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+                      <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                      <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">)</span>
+                      <span class="p">)</span>
+
+        <span class="c1"># Создаём таблицу истории сообщений</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s1">&#39;message_history&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+                        <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                        <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;contact&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+                        <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;direction&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+                        <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">Text</span><span class="p">),</span>
+                        <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+        <span class="c1"># Создаём таблицу контактов</span>
+        <span class="n">contacts</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s1">&#39;contacts&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+                         <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                         <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                         <span class="p">)</span>
+
+        <span class="c1"># Создаём таблицы</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database_engine</span><span class="p">)</span>
+
+        <span class="c1"># Создаём отображения</span>
+        <span class="n">mapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">KnownUsers</span><span class="p">,</span> <span class="n">users</span><span class="p">)</span>
+        <span class="n">mapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MessageStat</span><span class="p">,</span> <span class="n">history</span><span class="p">)</span>
+        <span class="n">mapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="p">,</span> <span class="n">contacts</span><span class="p">)</span>
+
+        <span class="c1"># Создаём сессию</span>
+        <span class="n">Session</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">database_engine</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+
+        <span class="c1"># Необходимо очистить таблицу контактов, т.к. при запуске они</span>
+        <span class="c1"># подгружаются с сервера.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ClientDatabase.add_contact"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.add_contact">[docs]</a>    <span class="k">def</span> <span class="nf">add_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contact</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод добавляющий контакт в базу данных.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">contact</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+            <span class="n">contact_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">contact</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">contact_row</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.contacts_clear"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.contacts_clear">[docs]</a>    <span class="k">def</span> <span class="nf">contacts_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод очищающий таблицу со списком контактов.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.del_contact"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.del_contact">[docs]</a>    <span class="k">def</span> <span class="nf">del_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contact</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод удаляющий определённый контакт.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">contact</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.add_users"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.add_users">[docs]</a>    <span class="k">def</span> <span class="nf">add_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод заполняющий таблицу известных пользователей.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">KnownUsers</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users_list</span><span class="p">:</span>
+            <span class="n">user_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KnownUsers</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user_row</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.save_message"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.save_message">[docs]</a>    <span class="k">def</span> <span class="nf">save_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contact</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод сохраняющий сообщение в базе данных.&quot;&quot;&quot;</span>
+        <span class="n">message_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MessageStat</span><span class="p">(</span><span class="n">contact</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">message_row</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.get_contacts"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.get_contacts">[docs]</a>    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод возвращающий список всех контактов.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">contact</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">contact</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.get_users"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.get_users">[docs]</a>    <span class="k">def</span> <span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод возвращающий список всех известных пользователей.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">user</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">KnownUsers</span><span class="o">.</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.check_user"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.check_user">[docs]</a>    <span class="k">def</span> <span class="nf">check_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод проверяющий существует ли пользователь.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">KnownUsers</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
+            <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.check_contact"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.check_contact">[docs]</a>    <span class="k">def</span> <span class="nf">check_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contact</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод проверяющий существует ли контакт.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Contacts</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">contact</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ClientDatabase.get_history"><a class="viewcode-back" href="../../client.database.html#client.database.ClientDatabase.get_history">[docs]</a>    <span class="k">def</span> <span class="nf">get_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contact</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод возвращающий историю сообщений с определённым пользователем.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MessageStat</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
+            <span class="n">contact</span><span class="o">=</span><span class="n">contact</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">history_row</span><span class="o">.</span><span class="n">contact</span><span class="p">,</span>
+                 <span class="n">history_row</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span>
+                 <span class="n">history_row</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+                 <span class="n">history_row</span><span class="o">.</span><span class="n">date</span><span class="p">)</span> <span class="k">for</span> <span class="n">history_row</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div></div>
+
+
+<span class="c1"># отладка</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">test_db</span> <span class="o">=</span> <span class="n">ClientDatabase</span><span class="p">(</span><span class="s1">&#39;test1&#39;</span><span class="p">)</span>
+    <span class="c1"># for i in [&#39;test3&#39;, &#39;test4&#39;, &#39;test5&#39;]:</span>
+    <span class="c1">#    test_db.add_contact(i)</span>
+    <span class="c1"># test_db.add_contact(&#39;test4&#39;)</span>
+    <span class="c1"># test_db.add_users([&#39;test1&#39;, &#39;test2&#39;, &#39;test3&#39;, &#39;test4&#39;, &#39;test5&#39;])</span>
+    <span class="c1"># test_db.save_message(</span>
+    <span class="c1">#     &#39;test2&#39;, &#39;in&#39;, f&#39;Привет! я тестовое сообщение &#39;</span>
+    <span class="c1">#                    f&#39;от {datetime.datetime.now()}!&#39;)</span>
+    <span class="c1"># test_db.save_message(</span>
+    <span class="c1">#     &#39;test2&#39;, &#39;out&#39;, f&#39;Привет! я другое тестовое сообщение &#39;</span>
+    <span class="c1">#                     f&#39;от {datetime.datetime.now()}!&#39;)</span>
+    <span class="c1"># print(test_db.get_contacts())</span>
+    <span class="c1"># print(test_db.get_users())</span>
+    <span class="c1"># print(test_db.check_user(&#39;test1&#39;))</span>
+    <span class="c1"># print(test_db.check_user(&#39;test10&#39;))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">test_db</span><span class="o">.</span><span class="n">get_history</span><span class="p">(</span><span class="s1">&#39;test2&#39;</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+    <span class="c1"># test_db.del_contact(&#39;test4&#39;)</span>
+    <span class="c1"># print(test_db.get_contacts())</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">lesson_07</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common.html">common package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher.html">launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher_gui.html">launcher_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logs.html">logs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_database.html">server_database module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_gui.html">server_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unit_tests.html">unit_tests package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

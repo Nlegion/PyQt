@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client.main_window_conv &#8212; lesson_07  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for client.main_window_conv</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Form implementation generated from reading ui file &#39;client.ui&#39;</span>
+<span class="c1">#</span>
+<span class="c1"># Created by: PyQt5 UI code generator 5.11.3</span>
+<span class="c1">#</span>
+<span class="c1"># WARNING! All changes made in this file will be lost!</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtWidgets</span>
+
+
+<div class="viewcode-block" id="Ui_MainClientWindow"><a class="viewcode-back" href="../../client.main_window_conv.html#client.main_window_conv.Ui_MainClientWindow">[docs]</a><span class="k">class</span> <span class="nc">Ui_MainClientWindow</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Ui_MainClientWindow.setupUi"><a class="viewcode-back" href="../../client.main_window_conv.html#client.main_window_conv.Ui_MainClientWindow.setupUi">[docs]</a>    <span class="k">def</span> <span class="nf">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MainClientWindow</span><span class="p">):</span>
+        <span class="n">MainClientWindow</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;MainClientWindow&quot;</span><span class="p">)</span>
+        <span class="n">MainClientWindow</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">756</span><span class="p">,</span> <span class="mi">534</span><span class="p">)</span>
+        <span class="n">MainClientWindow</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">756</span><span class="p">,</span> <span class="mi">534</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;centralwidget&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_contacts</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_contacts</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_contacts</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;label_contacts&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_add_contact</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_add_contact</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">31</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_add_contact</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;btn_add_contact&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_remove_contact</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_remove_contact</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">31</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_remove_contact</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;btn_remove_contact&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_history</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_history</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">391</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_history</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;label_history&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_message</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTextEdit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">441</span><span class="p">,</span> <span class="mi">71</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;text_message&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_new_message</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="c1"># Правка тут</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_new_message</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">330</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_new_message</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;label_new_message&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_contacts</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QListView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_contacts</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">251</span><span class="p">,</span> <span class="mi">411</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_contacts</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;list_contacts&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_messages</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QListView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_messages</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">441</span><span class="p">,</span> <span class="mi">301</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_messages</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;list_messages&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_send</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_send</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">610</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">131</span><span class="p">,</span> <span class="mi">31</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_send</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;btn_send&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">131</span><span class="p">,</span> <span class="mi">31</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;btn_clear&quot;</span><span class="p">)</span>
+        <span class="n">MainClientWindow</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenuBar</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">756</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;menubar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;menu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_2</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_2</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;menu_2&quot;</span><span class="p">)</span>
+        <span class="n">MainClientWindow</span><span class="o">.</span><span class="n">setMenuBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QStatusBar</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;statusBar&quot;</span><span class="p">)</span>
+        <span class="n">MainClientWindow</span><span class="o">.</span><span class="n">setStatusBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_exit</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_exit</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;menu_exit&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_add_contact</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_add_contact</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;menu_add_contact&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_del_contact</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_del_contact</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;menu_del_contact&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu_exit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_2</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu_add_contact</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_2</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu_del_contact</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_2</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">menuAction</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu_2</span><span class="o">.</span><span class="n">menuAction</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">retranslateUi</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">clear</span><span class="p">)</span>
+        <span class="n">QtCore</span><span class="o">.</span><span class="n">QMetaObject</span><span class="o">.</span><span class="n">connectSlotsByName</span><span class="p">(</span><span class="n">MainClientWindow</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ui_MainClientWindow.retranslateUi"><a class="viewcode-back" href="../../client.main_window_conv.html#client.main_window_conv.Ui_MainClientWindow.retranslateUi">[docs]</a>    <span class="k">def</span> <span class="nf">retranslateUi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MainClientWindow</span><span class="p">):</span>
+        <span class="n">_translate</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">translate</span>
+        <span class="n">MainClientWindow</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Чат Программа alpha release&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_contacts</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Список контактов:&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_add_contact</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Добавить контакт&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_remove_contact</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Удалить контакт&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_history</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;История сообщений:&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_new_message</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Введите новое сообщение:&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_send</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Отправить сообщение&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Очистить поле&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Файл&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_2</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Контакты&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_exit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Выход&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_add_contact</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Добавить контакт&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_del_contact</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">_translate</span><span class="p">(</span>
+            <span class="s2">&quot;MainClientWindow&quot;</span><span class="p">,</span> <span class="s2">&quot;Удалить контакт&quot;</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">lesson_07</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common.html">common package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher.html">launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher_gui.html">launcher_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logs.html">logs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_database.html">server_database module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_gui.html">server_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unit_tests.html">unit_tests package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

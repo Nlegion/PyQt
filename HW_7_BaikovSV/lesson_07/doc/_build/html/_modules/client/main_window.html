@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client.main_window &#8212; lesson_07  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for client.main_window</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">qApp</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> \
+    <span class="n">QListView</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QStandardItemModel</span><span class="p">,</span> <span class="n">QStandardItem</span><span class="p">,</span> <span class="n">QBrush</span><span class="p">,</span> <span class="n">QColor</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">pyqtSlot</span><span class="p">,</span> <span class="n">QEvent</span><span class="p">,</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">Cryptodome.Cipher</span> <span class="kn">import</span> <span class="n">PKCS1_OAEP</span>
+<span class="kn">from</span> <span class="nn">Cryptodome.PublicKey</span> <span class="kn">import</span> <span class="n">RSA</span>
+
+<span class="kn">from</span> <span class="nn">client.main_window_conv</span> <span class="kn">import</span> <span class="n">Ui_MainClientWindow</span>
+<span class="kn">from</span> <span class="nn">client.add_contact</span> <span class="kn">import</span> <span class="n">AddContactDialog</span>
+<span class="kn">from</span> <span class="nn">client.del_contact</span> <span class="kn">import</span> <span class="n">DelContactDialog</span>
+<span class="kn">from</span> <span class="nn">common.errors</span> <span class="kn">import</span> <span class="n">ServerError</span>
+<span class="kn">from</span> <span class="nn">common.variables</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;client&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ClientMainWindow"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow">[docs]</a><span class="k">class</span> <span class="nc">ClientMainWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс - основное окно пользователя.</span>
+<span class="sd">    Содержит всю основную логику работы клиентского модуля.</span>
+<span class="sd">    Конфигурация окна создана в QTDesigner и загружается из</span>
+<span class="sd">    конвертированого файла main_window_conv.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">transport</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># основные переменные</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transport</span> <span class="o">=</span> <span class="n">transport</span>
+
+        <span class="c1"># объект - дешифорвщик сообщений с предзагруженным ключём</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decrypter</span> <span class="o">=</span> <span class="n">PKCS1_OAEP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+
+        <span class="c1"># Загружаем конфигурацию окна из дизайнера</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">Ui_MainClientWindow</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка &quot;Выход&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">menu_exit</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">qApp</span><span class="o">.</span><span class="n">exit</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка отправить сообщение</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btn_send</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">)</span>
+
+        <span class="c1"># &quot;добавить контакт&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btn_add_contact</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_contact_window</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">menu_add_contact</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_contact_window</span><span class="p">)</span>
+
+        <span class="c1"># Удалить контакт</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btn_remove_contact</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_contact_window</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">menu_del_contact</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_contact_window</span><span class="p">)</span>
+
+        <span class="c1"># Дополнительные требующиеся атрибуты</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts_model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">messages</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_chat_key</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encryptor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">list_messages</span><span class="o">.</span><span class="n">setHorizontalScrollBarPolicy</span><span class="p">(</span>
+            <span class="n">Qt</span><span class="o">.</span><span class="n">ScrollBarAlwaysOff</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">list_messages</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Даблклик по листу контактов отправляется в обработчик</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">list_contacts</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_active_user</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients_list_update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_disabled_input</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ClientMainWindow.set_disabled_input"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.set_disabled_input">[docs]</a>    <span class="k">def</span> <span class="nf">set_disabled_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Метод делающий поля ввода неактивными&quot;&quot;&quot;</span>
+        <span class="c1"># Надпись  - получатель.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">label_new_message</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+            <span class="s1">&#39;Для выбора получателя дважды кликните на нем в окне контактов.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># Поле ввода и кнопка отправки неактивны до выбора получателя.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btn_send</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encryptor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_chat_key</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.history_list_update"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.history_list_update">[docs]</a>    <span class="k">def</span> <span class="nf">history_list_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод заполняющий соответствующий QListView</span>
+<span class="sd">        историей переписки с текущим собеседником.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Получаем историю сортированную по дате</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">get_history</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">),</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="c1"># Если модель не создана, создадим.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span> <span class="o">=</span> <span class="n">QStandardItemModel</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">list_messages</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history_model</span><span class="p">)</span>
+        <span class="c1"># Очистим от старых записей</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="c1"># Берём не более 20 последних записей.</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">start_index</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">20</span>
+        <span class="c1"># Заполнение модели записями, так-же стоит разделить входящие</span>
+        <span class="c1"># и исходящие выравниванием и разным фоном.</span>
+        <span class="c1"># отображает только последие 20 сообщений</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_index</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
+                <span class="n">mess</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Входящее от </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s1">:&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">mess</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">mess</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="n">QBrush</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">213</span><span class="p">,</span> <span class="mi">213</span><span class="p">)))</span>
+                <span class="n">mess</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mess</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Исходящее от </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s1">:&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">mess</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">mess</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+                <span class="n">mess</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="n">QBrush</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">history_model</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">list_messages</span><span class="o">.</span><span class="n">scrollToBottom</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.select_active_user"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.select_active_user">[docs]</a>    <span class="k">def</span> <span class="nf">select_active_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод обработчик события двойного клика по списку контактов.&quot;&quot;&quot;</span>
+        <span class="c1"># Выбранный пользователем (даблклик) находится в выделеном элементе в</span>
+        <span class="c1"># QListView</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">list_contacts</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+        <span class="c1"># вызываем основную функцию</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_active_user</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.set_active_user"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.set_active_user">[docs]</a>    <span class="k">def</span> <span class="nf">set_active_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод активации чата с собеседником.&quot;&quot;&quot;</span>
+        <span class="c1"># Запрашиваем публичный ключ пользователя и создаём объект шифрования</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_chat_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">key_request</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Загружен открытый ключ для </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_chat_key</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encryptor</span> <span class="o">=</span> <span class="n">PKCS1_OAEP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+                    <span class="n">RSA</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_chat_key</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_chat_key</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encryptor</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Не удалось получить ключ для </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Если ключа нет то ошибка, что не удалось начать чат с пользователем</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_chat_key</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Для выбранного пользователя нет ключа шифрования.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Ставим надпись и активируем кнопки</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">label_new_message</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Введите сообщенние для </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btn_send</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Заполняем окно историю сообщений по требуемому пользователю.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_list_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.clients_list_update"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.clients_list_update">[docs]</a>    <span class="k">def</span> <span class="nf">clients_list_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод обновляющий список контактов.&quot;&quot;&quot;</span>
+        <span class="n">contacts_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts_model</span> <span class="o">=</span> <span class="n">QStandardItemModel</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">contacts_list</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contacts_model</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">list_contacts</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contacts_model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.add_contact_window"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.add_contact_window">[docs]</a>    <span class="k">def</span> <span class="nf">add_contact_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод создающий окно - диалог добавления контакта&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">select_dialog</span>
+        <span class="n">select_dialog</span> <span class="o">=</span> <span class="n">AddContactDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+        <span class="n">select_dialog</span><span class="o">.</span><span class="n">btn_ok</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_contact_action</span><span class="p">(</span><span class="n">select_dialog</span><span class="p">))</span>
+        <span class="n">select_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.add_contact_action"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.add_contact_action">[docs]</a>    <span class="k">def</span> <span class="nf">add_contact_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод обработчк нажатия кнопки &#39;Добавить&#39;&quot;&quot;&quot;</span>
+        <span class="n">new_contact</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_contact</span><span class="p">(</span><span class="n">new_contact</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.add_contact"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.add_contact">[docs]</a>    <span class="k">def</span> <span class="nf">add_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_contact</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод добавляющий контакт в серверную и клиентсткую BD.</span>
+<span class="sd">        После обновления баз данных обновляет и содержимое окна.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">add_contact</span><span class="p">(</span><span class="n">new_contact</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ServerError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка сервера&#39;</span><span class="p">,</span> <span class="n">err</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Потеряно соединение с сервером!&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Таймаут соединения!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">add_contact</span><span class="p">(</span><span class="n">new_contact</span><span class="p">)</span>
+            <span class="n">new_contact</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">new_contact</span><span class="p">)</span>
+            <span class="n">new_contact</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contacts_model</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">new_contact</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Успешно добавлен контакт </span><span class="si">{</span><span class="n">new_contact</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Успех&#39;</span><span class="p">,</span> <span class="s1">&#39;Контакт успешно добавлен.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.delete_contact_window"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.delete_contact_window">[docs]</a>    <span class="k">def</span> <span class="nf">delete_contact_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод создающий окно удаления контакта.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">remove_dialog</span>
+        <span class="n">remove_dialog</span> <span class="o">=</span> <span class="n">DelContactDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+        <span class="n">remove_dialog</span><span class="o">.</span><span class="n">btn_ok</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_contact</span><span class="p">(</span><span class="n">remove_dialog</span><span class="p">))</span>
+        <span class="n">remove_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.delete_contact"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.delete_contact">[docs]</a>    <span class="k">def</span> <span class="nf">delete_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Метод удаляющий контакт из серверной и клиентсткой BD.</span>
+<span class="sd">        После обновления баз данных обновляет и содержимое окна.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">remove_contact</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ServerError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка сервера&#39;</span><span class="p">,</span> <span class="n">err</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Потеряно соединение с сервером!&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Таймаут соединения!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">del_contact</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clients_list_update</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Успешно удалён контакт </span><span class="si">{</span><span class="n">selected</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Успех&#39;</span><span class="p">,</span> <span class="s1">&#39;Контакт успешно удалён.&#39;</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="c1"># Если удалён активный пользователь, то деактивируем поля ввода.</span>
+            <span class="k">if</span> <span class="n">selected</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_disabled_input</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.send_message"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.send_message">[docs]</a>    <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция отправки сообщения текущему собеседнику.</span>
+<span class="sd">        Реализует шифрование сообщения и его отправку.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Текст в поле, проверяем что поле не пустое затем забирается сообщение</span>
+        <span class="c1"># и поле очищается</span>
+        <span class="n">message_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">text_message</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">message_text</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Шифруем сообщение ключом получателя и упаковываем в base64.</span>
+        <span class="n">message_text_encrypted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encryptor</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span>
+            <span class="n">message_text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">))</span>
+        <span class="n">message_text_encrypted_base64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span>
+            <span class="n">message_text_encrypted</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">,</span>
+                <span class="n">message_text_encrypted_base64</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="n">ServerError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="n">err</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Потеряно соединение с сервером!&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Таймаут соединения!&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ConnectionResetError</span><span class="p">,</span> <span class="ne">ConnectionAbortedError</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Потеряно соединение с сервером!&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">save_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">,</span> <span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">message_text</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Отправлено сообщение для &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">message_text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history_list_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.message"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.message">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Слот обработчик поступаемых сообщений, выполняет дешифровку</span>
+<span class="sd">        поступаемых сообщений и их сохранение в истории сообщений.</span>
+<span class="sd">        Запрашивает пользователя если пришло сообщение не от текущего</span>
+<span class="sd">        собеседника. При необходимости меняет собеседника.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Получаем строку байтов</span>
+        <span class="n">encrypted_message</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="n">MESSAGE_TEXT</span><span class="p">])</span>
+        <span class="c1"># Декодируем строку, при ошибке выдаём сообщение и завершаем функцию</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">decrypted_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decrypter</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">encrypted_message</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Ошибка&#39;</span><span class="p">,</span> <span class="s1">&#39;Не удалось декодировать сообщение.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Сохраняем сообщение в базу и обновляем историю сообщений или</span>
+        <span class="c1"># открываем новый чат.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">save_message</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">,</span>
+            <span class="s1">&#39;in&#39;</span><span class="p">,</span>
+            <span class="n">decrypted_message</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">))</span>
+
+        <span class="n">sender</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="n">SENDER</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sender</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history_list_update</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Проверим есть ли такой пользователь у нас в контактах:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">check_contact</span><span class="p">(</span><span class="n">sender</span><span class="p">):</span>
+                <span class="c1"># Если есть, спрашиваем и желании открыть с ним чат и открываем</span>
+                <span class="c1"># при желании</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="s1">&#39;Новое сообщение&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;Получено новое сообщение от </span><span class="si">{</span><span class="n">sender</span><span class="si">}</span><span class="s1">, открыть чат с ним?&#39;</span><span class="p">,</span>
+                    <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">,</span>
+                        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="o">=</span> <span class="n">sender</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_active_user</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">)</span>
+                <span class="c1"># Раз нету,спрашиваем хотим ли добавить юзера в контакты.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="s1">&#39;Новое сообщение&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;Получено новое сообщение от </span><span class="si">{</span><span class="n">sender</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1"> &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Данного пользователя нет в вашем контакт-листе.</span><span class="se">\n</span><span class="s1"> &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Добавить в контакты и открыть чат с ним?&#39;</span><span class="p">,</span>
+                    <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">,</span>
+                        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_contact</span><span class="p">(</span><span class="n">sender</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="o">=</span> <span class="n">sender</span>
+                    <span class="c1"># Нужно заново сохранить сообщение,</span>
+                    <span class="c1"># иначе оно будет потеряно,</span>
+                    <span class="c1"># т.к. на момент предыдущего вызова контакта не было.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">save_message</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span>
+                        <span class="n">decrypted_message</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_active_user</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.connection_lost"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.connection_lost">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">connection_lost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Слот обработчик потери соеднинения с сервером.</span>
+<span class="sd">        Выдаёт окно предупреждение и завершает работу приложения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="s1">&#39;Сбой соединения&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Потеряно соединение с сервером. &#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.sig_205"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.sig_205">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">sig_205</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Слот выполняющий обновление баз данных по команде сервера.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">check_user</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s1">&#39;Сочувствую&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;К сожалению собеседник был удалён с сервера.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_disabled_input</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_chat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients_list_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientMainWindow.make_connection"><a class="viewcode-back" href="../../client.main_window.html#client.main_window.ClientMainWindow.make_connection">[docs]</a>    <span class="k">def</span> <span class="nf">make_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Метод обеспечивающий соединение сигналов и слотов.&quot;&quot;&quot;</span>
+        <span class="n">trans_obj</span><span class="o">.</span><span class="n">new_message</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">trans_obj</span><span class="o">.</span><span class="n">connection_lost</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_lost</span><span class="p">)</span>
+        <span class="n">trans_obj</span><span class="o">.</span><span class="n">message_205</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sig_205</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">lesson_07</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common.html">common package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher.html">launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher_gui.html">launcher_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logs.html">logs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_database.html">server_database module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_gui.html">server_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unit_tests.html">unit_tests package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
