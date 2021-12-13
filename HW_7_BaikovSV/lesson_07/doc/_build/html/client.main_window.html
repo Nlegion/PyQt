@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client.main_window module &#8212; lesson_07  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-client.main_window">
+<span id="client-main-window-module"></span><h1>client.main_window module<a class="headerlink" href="#module-client.main_window" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="client.main_window.ClientMainWindow">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">client.main_window.</span></code><code class="sig-name descname"><span class="pre">ClientMainWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<p>Класс - основное окно пользователя.
+Содержит всю основную логику работы клиентского модуля.
+Конфигурация окна создана в QTDesigner и загружается из
+конвертированого файла main_window_conv.py</p>
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.add_contact">
+<code class="sig-name descname"><span class="pre">add_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_contact</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.add_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.add_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод добавляющий контакт в серверную и клиентсткую BD.
+После обновления баз данных обновляет и содержимое окна.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.add_contact_action">
+<code class="sig-name descname"><span class="pre">add_contact_action</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.add_contact_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.add_contact_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод обработчк нажатия кнопки ‘Добавить’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.add_contact_window">
+<code class="sig-name descname"><span class="pre">add_contact_window</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.add_contact_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.add_contact_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод создающий окно - диалог добавления контакта</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.clients_list_update">
+<code class="sig-name descname"><span class="pre">clients_list_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.clients_list_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.clients_list_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод обновляющий список контактов.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.connection_lost">
+<code class="sig-name descname"><span class="pre">connection_lost</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.connection_lost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.connection_lost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Слот обработчик потери соеднинения с сервером.
+Выдаёт окно предупреждение и завершает работу приложения.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.delete_contact">
+<code class="sig-name descname"><span class="pre">delete_contact</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.delete_contact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.delete_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод удаляющий контакт из серверной и клиентсткой BD.
+После обновления баз данных обновляет и содержимое окна.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.delete_contact_window">
+<code class="sig-name descname"><span class="pre">delete_contact_window</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.delete_contact_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.delete_contact_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод создающий окно удаления контакта.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.history_list_update">
+<code class="sig-name descname"><span class="pre">history_list_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.history_list_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.history_list_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод заполняющий соответствующий QListView
+историей переписки с текущим собеседником.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.make_connection">
+<code class="sig-name descname"><span class="pre">make_connection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trans_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.make_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.make_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод обеспечивающий соединение сигналов и слотов.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.message">
+<code class="sig-name descname"><span class="pre">message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Слот обработчик поступаемых сообщений, выполняет дешифровку
+поступаемых сообщений и их сохранение в истории сообщений.
+Запрашивает пользователя если пришло сообщение не от текущего
+собеседника. При необходимости меняет собеседника.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.select_active_user">
+<code class="sig-name descname"><span class="pre">select_active_user</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.select_active_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.select_active_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод обработчик события двойного клика по списку контактов.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.send_message">
+<code class="sig-name descname"><span class="pre">send_message</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.send_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Функция отправки сообщения текущему собеседнику.
+Реализует шифрование сообщения и его отправку.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.set_active_user">
+<code class="sig-name descname"><span class="pre">set_active_user</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.set_active_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.set_active_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод активации чата с собеседником.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.set_disabled_input">
+<code class="sig-name descname"><span class="pre">set_disabled_input</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.set_disabled_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.set_disabled_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Метод делающий поля ввода неактивными</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="client.main_window.ClientMainWindow.sig_205">
+<code class="sig-name descname"><span class="pre">sig_205</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client/main_window.html#ClientMainWindow.sig_205"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.main_window.ClientMainWindow.sig_205" title="Permalink to this definition">¶</a></dt>
+<dd><p>Слот выполняющий обновление баз данных по команде сервера.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">lesson_07</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common.html">common package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launcher.html">launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launcher_gui.html">launcher_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">logs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server_database.html">server_database module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server_gui.html">server_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_tests.html">unit_tests package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/client.main_window.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

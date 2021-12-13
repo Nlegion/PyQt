@@ -1,0 +1,38 @@
+2021-07-07 13:50:22,117 - DEBUG    - server   - App started 
+2021-07-07 13:50:22,130 - DEBUG    - body     - Function "get_server_socket" is called into "mainloop" 
+2021-07-07 13:50:22,133 - INFO     - server   - Server started at 127.0.0.1:7777 
+2021-07-07 13:50:29,805 - INFO     - server   - Client connected from 127.0.0.1:55636 
+2021-07-07 13:50:30,308 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-07 13:50:30,309 - DEBUG    - body     - Function "send_data" is called into "mainloop" 
+2021-07-07 13:50:33,820 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-07 13:50:33,821 - DEBUG    - body     - Function "send_data" is called into "mainloop" 
+2021-07-07 13:50:39,362 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-07 13:50:39,363 - DEBUG    - body     - Function "send_data" is called into "mainloop" 
+2021-07-11 12:58:29,491 - DEBUG    - server   - App started 
+2021-07-11 12:58:29,504 - DEBUG    - body     - Function "get_server_socket" is called into "mainloop" 
+2021-07-11 12:58:29,508 - INFO     - server   - Server started at 127.0.0.1:7777 
+2021-07-11 12:58:42,902 - INFO     - server   - Client connected from 127.0.0.1:52829 
+2021-07-11 12:58:43,407 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-11 12:58:43,407 - DEBUG    - body     - Function "send_data" is called into "mainloop" 
+2021-07-11 12:59:12,129 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-11 13:09:23,096 - DEBUG    - server   - App started 
+2021-07-11 13:09:23,110 - DEBUG    - body     - Function "get_server_socket" is called into "mainloop" 
+2021-07-11 13:09:23,113 - INFO     - server   - Server started at 127.0.0.1:7777 
+2021-07-11 13:09:32,511 - INFO     - server   - Client connected from 127.0.0.1:52878 
+2021-07-11 13:09:33,017 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-11 13:09:33,018 - DEBUG    - body     - Function "send_data" is called into "mainloop" 
+2021-07-11 13:09:39,066 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-11 13:11:01,781 - DEBUG    - server   - App started 
+2021-07-11 13:11:01,795 - DEBUG    - body     - Function "get_server_socket" is called into "mainloop" 
+2021-07-11 13:11:01,798 - INFO     - server   - Server started at 127.0.0.1:7777 
+2021-07-11 13:11:10,945 - INFO     - server   - Client connected from 127.0.0.1:52880 
+2021-07-11 13:11:11,458 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-11 13:11:11,458 - DEBUG    - body     - Function "send_data" is called into "mainloop" 
+2021-07-11 13:11:31,574 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-11 13:11:39,120 - DEBUG    - server   - App started 
+2021-07-11 13:11:39,136 - DEBUG    - body     - Function "get_server_socket" is called into "mainloop" 
+2021-07-11 13:11:39,139 - INFO     - server   - Server started at 127.0.0.1:7777 
+2021-07-11 13:11:59,155 - INFO     - server   - Client connected from 127.0.0.1:52894 
+2021-07-11 13:11:59,659 - DEBUG    - body     - Function "get_data" is called into "mainloop" 
+2021-07-11 13:11:59,660 - DEBUG    - body     - Function "send_data" is called into "mainloop" 
+2021-07-11 13:13:12,136 - DEBUG    - body     - Function "get_data" is called into "mainloop" 

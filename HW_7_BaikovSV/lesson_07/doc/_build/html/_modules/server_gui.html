@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>server_gui &#8212; lesson_07  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for server_gui</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">qApp</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> \
+    <span class="n">QTableView</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> \
+    <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QMessageBox</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QStandardItemModel</span><span class="p">,</span> <span class="n">QStandardItem</span><span class="p">,</span> <span class="n">QIcon</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="c1"># GUI - Создание таблицы QModel, для отображения в окне программы.</span>
+<div class="viewcode-block" id="gui_create_model"><a class="viewcode-back" href="../server_gui.html#server_gui.gui_create_model">[docs]</a><span class="k">def</span> <span class="nf">gui_create_model</span><span class="p">(</span><span class="n">database</span><span class="p">):</span>
+    <span class="n">list_users</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">active_users_list</span><span class="p">()</span>
+    <span class="n">list_qmodel</span> <span class="o">=</span> <span class="n">QStandardItemModel</span><span class="p">()</span>
+    <span class="n">list_qmodel</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">([</span><span class="s1">&#39;Имя Клиента&#39;</span><span class="p">,</span> <span class="s1">&#39;IP Адрес&#39;</span><span class="p">,</span> <span class="s1">&#39;Порт&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;Время подключения&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">list_users</span><span class="p">:</span>
+        <span class="n">user</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="n">row</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+        <span class="n">ip</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">port</span><span class="p">))</span>
+        <span class="n">port</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Уберём милисекунды из строки времени,</span>
+        <span class="c1"># т.к. такая точность не требуется.</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">list_qmodel</span><span class="o">.</span><span class="n">appendRow</span><span class="p">([</span><span class="n">user</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">time</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">list_qmodel</span></div>
+
+
+<span class="c1"># GUI - Функция реализующая заполнение таблицы историей сообщений.</span>
+<div class="viewcode-block" id="create_stat_model"><a class="viewcode-back" href="../server_gui.html#server_gui.create_stat_model">[docs]</a><span class="k">def</span> <span class="nf">create_stat_model</span><span class="p">(</span><span class="n">database</span><span class="p">):</span>
+    <span class="c1"># Список записей из базы</span>
+    <span class="n">hist_list</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">message_history</span><span class="p">()</span>
+
+    <span class="c1"># Объект модели данных:</span>
+    <span class="n">list_qmodel</span> <span class="o">=</span> <span class="n">QStandardItemModel</span><span class="p">()</span>
+    <span class="n">list_qmodel</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;Имя Клиента&#39;</span><span class="p">,</span> <span class="s1">&#39;Последний раз входил&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Сообщений отправлено&#39;</span><span class="p">,</span> <span class="s1">&#39;Сообщений получено&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">hist_list</span><span class="p">:</span>
+        <span class="n">user</span><span class="p">,</span> <span class="n">last_seen</span><span class="p">,</span> <span class="n">sent</span><span class="p">,</span> <span class="n">recvd</span> <span class="o">=</span> <span class="n">row</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">last_seen</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">last_seen</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
+        <span class="n">last_seen</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">sent</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sent</span><span class="p">))</span>
+        <span class="n">sent</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">recvd</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">recvd</span><span class="p">))</span>
+        <span class="n">recvd</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">list_qmodel</span><span class="o">.</span><span class="n">appendRow</span><span class="p">([</span><span class="n">user</span><span class="p">,</span> <span class="n">last_seen</span><span class="p">,</span> <span class="n">sent</span><span class="p">,</span> <span class="n">recvd</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">list_qmodel</span></div>
+
+
+<span class="c1"># Класс основного окна</span>
+<div class="viewcode-block" id="MainWindow"><a class="viewcode-back" href="../server_gui.html#server_gui.MainWindow">[docs]</a><span class="k">class</span> <span class="nc">MainWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initUI</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MainWindow.initUI"><a class="viewcode-back" href="../server_gui.html#server_gui.MainWindow.initUI">[docs]</a>    <span class="k">def</span> <span class="nf">initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Кнопка выхода</span>
+        <span class="c1"># exitAction = QAction(&#39;Выход&#39;, self)</span>
+        <span class="n">exitAction</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="s1">&#39;server/img/exit.png&#39;</span><span class="p">),</span> <span class="s1">&#39;Exit/Выход&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">exitAction</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s1">&#39;Ctrl+Q&#39;</span><span class="p">)</span>
+        <span class="n">exitAction</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">qApp</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка обновить список клиентов</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_button</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Обновить список&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка настроек сервера</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_btn</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Настройки сервера&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка вывести историю сообщений</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_history_button</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;История клиентов&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Статусбар</span>
+        <span class="c1"># dock widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span>
+
+        <span class="c1"># Тулбар</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addToolBar</span><span class="p">(</span><span class="s1">&#39;MainBar&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refresh_button</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_history_button</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_btn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">exitAction</span><span class="p">)</span>
+
+        <span class="c1"># Настройки геометрии основного окна</span>
+        <span class="c1"># Поскольку работать с динамическими размерами мы не умеем,</span>
+        <span class="c1"># и мало времени на изучение, размер окна фиксирован.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Messaging Server alpha release&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Надпись о том, что ниже список подключённых клиентов</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Список подключённых клиентов:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+        <span class="c1"># self.label.move(10, 25)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">38</span><span class="p">)</span>
+
+        <span class="c1"># Окно со списком подключённых клиентов.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_clients_table</span> <span class="o">=</span> <span class="n">QTableView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># self.active_clients_table.move(10, 45)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_clients_table</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">58</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_clients_table</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">780</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+
+        <span class="c1"># Последним параметром отображаем окно.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># Класс окна с историей пользователей</span>
+<div class="viewcode-block" id="HistoryWindow"><a class="viewcode-back" href="../server_gui.html#server_gui.HistoryWindow">[docs]</a><span class="k">class</span> <span class="nc">HistoryWindow</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initUI</span><span class="p">()</span>
+
+<div class="viewcode-block" id="HistoryWindow.initUI"><a class="viewcode-back" href="../server_gui.html#server_gui.HistoryWindow.initUI">[docs]</a>    <span class="k">def</span> <span class="nf">initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Настройки окна:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Статистика клиентов&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">700</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_DeleteOnClose</span><span class="p">)</span>
+
+        <span class="c1"># Кнапка закрытия окна</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Закрыть&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">650</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+
+        <span class="c1"># Лист с собственно историей</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span> <span class="o">=</span> <span class="n">QTableView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">580</span><span class="p">,</span> <span class="mi">620</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># Класс окна настроек</span>
+<div class="viewcode-block" id="ConfigWindow"><a class="viewcode-back" href="../server_gui.html#server_gui.ConfigWindow">[docs]</a><span class="k">class</span> <span class="nc">ConfigWindow</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initUI</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ConfigWindow.initUI"><a class="viewcode-back" href="../server_gui.html#server_gui.ConfigWindow.initUI">[docs]</a>    <span class="k">def</span> <span class="nf">initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Настройки окна</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">365</span><span class="p">,</span> <span class="mi">260</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Настройки сервера&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Надпись о файле базы данных:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Путь до файла базы данных: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path_label</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path_label</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+
+        <span class="c1"># Строка с путём базы</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка выбора пути.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path_select</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Обзор...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path_select</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">275</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+
+        <span class="c1"># Функция обработчик открытия окна выбора папки</span>
+        <span class="k">def</span> <span class="nf">open_file_dialog</span><span class="p">():</span>
+            <span class="k">global</span> <span class="n">dialog</span>
+            <span class="n">dialog</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">()</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path_select</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">open_file_dialog</span><span class="p">)</span>
+
+        <span class="c1"># Метка с именем поля файла базы данных</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_file_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Имя файла базы данных: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_file_label</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">68</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_file_label</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+
+        <span class="c1"># Поле для ввода имени файла</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_file</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_file</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">66</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_file</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">150</span> <span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1"># Метка с номером порта</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Номер порта для соединений:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port_label</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">108</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port_label</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+
+        <span class="c1"># Поле для ввода номера порта</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">108</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1"># Метка с адресом для соединений</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;С какого IP принимаем соединения:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_label</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">148</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_label</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+
+        <span class="c1"># Метка с напоминанием о пустом поле.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_label_note</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39; оставьте это поле пустым, чтобы</span><span class="se">\n</span><span class="s1"> &#39;</span>
+                                    <span class="s1">&#39;принимать соединения с любых адресов.&#39;</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_label_note</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">168</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_label_note</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+
+        <span class="c1"># Поле для ввода ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">148</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка сохранения настроек</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Сохранить&#39;</span> <span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_btn</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">190</span> <span class="p">,</span> <span class="mi">220</span><span class="p">)</span>
+
+        <span class="c1"># Кнапка закрытия окна</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Закрыть&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">275</span><span class="p">,</span> <span class="mi">220</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    app = QApplication(sys.argv)</span>
+<span class="sd">    ex = MainWindow()</span>
+<span class="sd">    ex.statusBar().showMessage(&#39;Test Statusbar Message&#39;)</span>
+<span class="sd">    test_list = QStandardItemModel(ex)</span>
+<span class="sd">    test_list.setHorizontalHeaderLabels(</span>
+<span class="sd">    [&#39;Имя Клиента&#39;, &#39;IP Адрес&#39;, &#39;Порт&#39;, &#39;Время подключения&#39;])</span>
+<span class="sd">    test_list.appendRow(</span>
+<span class="sd">    [QStandardItem(&#39;1&#39;), QStandardItem(&#39;2&#39;), QStandardItem(&#39;3&#39;)])</span>
+<span class="sd">    test_list.appendRow(</span>
+<span class="sd">    [QStandardItem(&#39;4&#39;), QStandardItem(&#39;5&#39;), QStandardItem(&#39;6&#39;)])</span>
+<span class="sd">    ex.active_clients_table.setModel(test_list)</span>
+<span class="sd">    ex.active_clients_table.resizeColumnsToContents()</span>
+<span class="sd">    print(&#39;JKJKJK&#39;)</span>
+<span class="sd">    app.exec_()</span>
+<span class="sd">    print(&#39;END&#39;)&#39;&#39;&#39;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">QMessageBox</span>
+    <span class="n">dial</span> <span class="o">=</span> <span class="n">ConfigWindow</span><span class="p">()</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">lesson_07</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common.html">common package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../launcher.html">launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../launcher_gui.html">launcher_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logs.html">logs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server_database.html">server_database module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server_gui.html">server_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">unit_tests package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

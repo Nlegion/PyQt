@@ -1,0 +1,12 @@
+2021-11-06 16:16:55,377 - INFO - Server started with 127.0.0.1:7777
+2021-11-06 16:17:20,643 - INFO - Client detected ('127.0.0.1', 57978)
+2021-11-06 16:17:33,986 - INFO - Client detected ('127.0.0.1', 57979)
+2021-11-06 16:17:38,136 - DEBUG - validate_request - with args:({'action': '1234', 'time': '2021-11-06T16:17:38.135291', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '234'},), {}
+2021-11-06 16:17:38,149 - ERROR - Action 1234 does not exits
+2021-11-06 16:17:38,149 - DEBUG - make_404 - with args:({'action': '1234', 'time': '2021-11-06T16:17:38.135291', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '234'},), {}
+2021-11-06 16:17:38,149 - DEBUG - make_response - with args:({'action': '1234', 'time': '2021-11-06T16:17:38.135291', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '234'}, 404, 'Action is not supported'), {}
+2021-11-06 16:17:53,083 - DEBUG - validate_request - with args:({'action': 'test', 'time': '2021-11-06T16:17:53.082578', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '123'},), {}
+2021-11-06 16:17:53,083 - ERROR - Action test does not exits
+2021-11-06 16:17:53,083 - DEBUG - make_404 - with args:({'action': 'test', 'time': '2021-11-06T16:17:53.082578', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '123'},), {}
+2021-11-06 16:17:53,083 - DEBUG - make_response - with args:({'action': 'test', 'time': '2021-11-06T16:17:53.082578', 'user': {'account_name': 'anonim', 'status': 'I am here!'}, 'data': '123'}, 404, 'Action is not supported'), {}
+2021-11-06 16:18:23,325 - INFO - Server  closed

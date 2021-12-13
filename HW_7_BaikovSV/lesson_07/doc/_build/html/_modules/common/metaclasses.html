@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>common.metaclasses &#8212; lesson_07  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for common.metaclasses</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">dis</span>
+
+
+<div class="viewcode-block" id="ServerMaker"><a class="viewcode-back" href="../../common.metaclasses.html#common.metaclasses.ServerMaker">[docs]</a><span class="k">class</span> <span class="nc">ServerMaker</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Метакласс, проверяющий что в результирующем классе нет клиентских</span>
+<span class="sd">    вызовов таких как: connect. Также проверяется, что серверный</span>
+<span class="sd">    сокет является TCP и работает по IPv4 протоколу.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">):</span>
+        <span class="c1"># Список методов, которые используются в функциях класса:</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Атрибуты, вызываемые функциями классов</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">clsdict</span><span class="p">:</span>
+            <span class="c1"># Пробуем</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">dis</span><span class="o">.</span><span class="n">get_instructions</span><span class="p">(</span><span class="n">clsdict</span><span class="p">[</span><span class="n">func</span><span class="p">])</span>
+                <span class="c1"># Если не функция то ловим исключение</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Раз функция разбираем код, получая используемые методы и</span>
+                <span class="c1"># атрибуты.</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">opname</span> <span class="o">==</span> <span class="s1">&#39;LOAD_GLOBAL&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">argval</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+                            <span class="n">methods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">argval</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">opname</span> <span class="o">==</span> <span class="s1">&#39;LOAD_ATTR&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">argval</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+                            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">argval</span><span class="p">)</span>
+        <span class="c1"># Если обнаружено использование недопустимого метода connect,</span>
+        <span class="c1"># генерируем исключение:</span>
+        <span class="k">if</span> <span class="s1">&#39;connect&#39;</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Использование метода connect недопустимо в серверном классе&#39;</span><span class="p">)</span>
+        <span class="c1"># Если сокет не инициализировался константами SOCK_STREAM(TCP)</span>
+        <span class="c1"># AF_INET(IPv4), тоже исключение.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;SOCK_STREAM&#39;</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="ow">and</span> <span class="s1">&#39;AF_INET&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Некорректная инициализация сокета.&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ClientMaker"><a class="viewcode-back" href="../../common.metaclasses.html#common.metaclasses.ClientMaker">[docs]</a><span class="k">class</span> <span class="nc">ClientMaker</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Метакласс, проверяющий что в результирующем классе нет серверных</span>
+<span class="sd">    вызовов таких как: accept, listen. Также проверяется, что сокет не</span>
+<span class="sd">    создаётся внутри конструктора класса.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">):</span>
+        <span class="c1"># Список методов, которые используются в функциях класса:</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">clsdict</span><span class="p">:</span>
+            <span class="c1"># Пробуем</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">dis</span><span class="o">.</span><span class="n">get_instructions</span><span class="p">(</span><span class="n">clsdict</span><span class="p">[</span><span class="n">func</span><span class="p">])</span>
+                <span class="c1"># Если не функция то ловим исключение</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Раз функция разбираем код, получая используемые методы.</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">opname</span> <span class="o">==</span> <span class="s1">&#39;LOAD_GLOBAL&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">argval</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+                            <span class="n">methods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">argval</span><span class="p">)</span>
+        <span class="c1"># Если обнаружено использование недопустимого метода accept, listen,</span>
+        <span class="c1"># socket бросаем исключение:</span>
+        <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;accept&#39;</span><span class="p">,</span> <span class="s1">&#39;listen&#39;</span><span class="p">,</span> <span class="s1">&#39;socket&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s1">&#39;В классе обнаружено использование запрещённого метода&#39;</span><span class="p">)</span>
+        <span class="c1"># Вызов get_message или send_message из utils считаем корректным</span>
+        <span class="c1"># использованием сокетов</span>
+        <span class="k">if</span> <span class="s1">&#39;get_message&#39;</span> <span class="ow">in</span> <span class="n">methods</span> <span class="ow">or</span> <span class="s1">&#39;send_message&#39;</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Отсутствуют вызовы функций, работающих с сокетами.&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">lesson_07</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common.html">common package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher.html">launcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../launcher_gui.html">launcher_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logs.html">logs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_database.html">server_database module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server_gui.html">server_gui module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unit_tests.html">unit_tests package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

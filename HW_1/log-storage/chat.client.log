@@ -1,0 +1,8 @@
+2021-10-29 11:48:21,307 - DEBUG    - client   - App started 
+2021-10-29 11:48:21,323 - DEBUG    - body     - Function "get_client_socket" is called into "<module>" 
+2021-10-29 11:48:21,442 - DEBUG    - client   - App started 
+2021-10-29 11:48:21,456 - DEBUG    - body     - Function "get_client_socket" is called into "<module>" 
+2021-10-29 11:48:21,458 - INFO     - client   - Connected to server: 127.0.0.1:7777 
+2021-10-29 11:48:21,459 - DEBUG    - body     - Function "send_data" is called into "<module>" 
+2021-10-29 11:48:21,702 - DEBUG    - body     - Function "get_data" is called into "receive" 
+2021-10-29 11:48:21,967 - DEBUG    - body     - Function "get_data" is called into "receive" 

@@ -1,0 +1,6 @@
+2021-06-26 15:40:29,065 - DEBUG - server - App started 
+2021-06-27 12:17:12,428 - DEBUG - server - App started 
+2021-06-27 12:17:12,428 - INFO - server - server param , 7777 
+2021-06-27 12:17:35,916 - INFO - server - incom mess from <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 7777), raddr=('127.0.0.1', 51173)>,('127.0.0.1', 51173) 
+2021-06-27 12:17:35,919 - INFO - server - {'action': 'presence', 'time': 1624785455.9124732, 'type': 'online', 'user': {'account_name': 'е123', 'status': 'Статус норм'}} 
+2021-06-27 12:17:35,920 - DEBUG - server - App ending 
